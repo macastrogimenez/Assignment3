@@ -13,30 +13,28 @@ public interface ConcurrentIntegerSet {
     public int size();
 }
 
-class ConcurrentIntegerSetBuggy implements ConcurrentIntegerSet {
+// TODO: Fix this class to pass your tests
+class ConcurrentIntegerSetSync implements ConcurrentIntegerSet {
     final private Set<Integer> set;
     private ReentrantLock lock;
 
-    public ConcurrentIntegerSetBuggy() {
-        try {
-            lock.lock();
-            this.set = new HashSet<Integer>();    
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
-        finally{
-            lock.unlock();
-        }
+    public ConcurrentIntegerSetSync() {
+        this.set = new HashSet<Integer>();
     }
 
     public boolean add(Integer element) {
         lock.lock();
-        return set.add(element);
+        boolean addedElement = set.add(element);
+        lock.unlock();
+        return addedElement;
         
     }
 
     public boolean remove(Integer element) {
-        return set.remove(element);
+        lock.lock();
+        boolean removedElement = set.remove(element);
+        lock.unlock();
+        return removedElement;
     }
 
     public int size() {
@@ -44,11 +42,11 @@ class ConcurrentIntegerSetBuggy implements ConcurrentIntegerSet {
     }
 }
 
-// TODO: Fix this class to pass your tests
-class ConcurrentIntegerSetSync implements ConcurrentIntegerSet {
+
+class ConcurrentIntegerSetBuggy implements ConcurrentIntegerSet {
     final private Set<Integer> set;
 
-    public ConcurrentIntegerSetSync() {
+    public ConcurrentIntegerSetBuggy() {
         this.set = new HashSet<Integer>();
     }
 
