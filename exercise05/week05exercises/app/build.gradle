@@ -19,6 +19,8 @@ dependencies {
     // Use JUnit test framework.
     testImplementation libs.junit
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation(platform('org.junit:junit-bom:5.8.1'))
+    testImplementation 'org.junit.jupiter:junit-jupiter'
 
     // This dependency is used by the application.
     implementation libs.guava

@@ -92,3 +92,24 @@ When a test **fails**, it provides definitive evidence that the implementation i
 Test passes do not prove correctness. Even with 5000 repetitions and 20 threads, we only explore a tiny fraction of all possible thread interleavings. The number of possible execution orders grows with thread count.
 Moreover, a bug might only manifest under specific timing conditions (CPU load, scheduler decisions, hardware) that didn't occur during testing. Therefore, testing can find bugs but cannot prove their absence in concurrent programs.
 
+## Exercise 5.2
+### Exercise 5.2.1
+The property doesn't hold because if we release more times than we acquired, there could be more threads in the critical section than the capacity would suggest:
+```java
+        SemaphoreImp semaphore = new SemaphoreImp(1);
+        
+        // First acquire to reach capacity
+        semaphore.acquire();  // Thread 1 enters
+        
+        semaphore.release();  //Thread 1 leaves
+        semaphore.release();  // State becomes -1
+        
+        // Now multiple threads can enter even though capacity is 1
+        semaphore.acquire();  // Thread 2 enters
+        semaphore.acquire();  // Thread 3 enters
+        //semaphore.acquire();  // Thread 4 enters
+```
+There is no condition that would check if the state is greater than 0, so it could happen that semaphore is released more times than it's acquired. And in that case the state would be negative and capacity would still be the same, so in that case c+(-state) threads could enter. So if T1, T2, T3 are threads, A is acquire and R is release, then the interleaving would be: T1(A)->T1(R)->T1(R)->T2(A)->T3(A).
+
+### Exercise 5.2.2
+Second test in test file SemaphoreImpTest.java - it fails, because there is more than one thread inside the critical section.
