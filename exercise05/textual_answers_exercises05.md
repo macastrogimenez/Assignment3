@@ -77,7 +77,7 @@ Also, while it might seem that `size()` is just a read operation and doesn't mod
 ### Exercise 5.1.4
 
 The test were performed with a Macbook Pro M1 Pro 32Gb RAM, 1Tb SSD (10 CPU). Every test was ran 5000 times, with the main thread plus 20 other threads trying to either add or remove an element from the set.
-No failures were found which is a good sign that the `ConcurrentIntegerSetLibrary` is thread-safe, however, these do not guarantee the that this is the case.
+No failures were found which is a good sign that the `ConcurrentIntegerSetLibrary` is thread-safe, however, these do not guarantee the that this is the case, this could only be demonstrated through formal proof.
 
 ### Exercise 5.1.5
 
