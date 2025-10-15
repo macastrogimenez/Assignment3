@@ -28,7 +28,7 @@ public class ConcurrentSetTest {
 
     @RepeatedTest(5000)  
     @DisplayName("Tests if the set would add the same number twice - this should not happen, but it is a possible interleaving") // TODO: make sure this description is correct
-    public void testingAddBuggySetParallel() {
+    public void AddBuggySetParallel() {
         set = new ConcurrentIntegerSetBuggy();
         int nrThreads = 20;
         // init barrier
@@ -64,7 +64,7 @@ public class ConcurrentSetTest {
 
     @RepeatedTest(5000)
     // TODO: add display name
-    public void testingRemoveBuggySetParallel() {
+    public void RemoveBuggySetParallel() {
         set = new ConcurrentIntegerSetBuggy();
         set.add(2);
         int nrThreads = 20;
@@ -101,7 +101,7 @@ public class ConcurrentSetTest {
 
     @RepeatedTest(5000)
     @DisplayName("Tests if the set would add the same number twice - this should not happen, as this set is thread safe") // TODO: make sure this description is correct
-    public void testingAddGoodSet() {
+    public void AddFixedSetParallel() {
         // Reinitialize for each test iteration
         set = new ConcurrentIntegerSetSync();
         
@@ -120,7 +120,7 @@ public class ConcurrentSetTest {
                 try {
                     barrier.await(); // Wait for all threads to be ready
                 
-                    set.add(42); // Example: add same number from all threads
+                    set.add(3); // Example: add same number from all threads
                 
                     barrier.await(); // Signal completion
                 } catch (InterruptedException | BrokenBarrierException e) {
@@ -142,7 +142,7 @@ public class ConcurrentSetTest {
 
     @RepeatedTest(5000)
     // TODO: add display name
-    public void testingRemoveGoodSetParallel() {
+    public void RemoveFixedSetParallel() {
         set = new ConcurrentIntegerSetSync();
         set.add(2);
         int nrThreads = 20;
@@ -179,7 +179,7 @@ public class ConcurrentSetTest {
 
     @RepeatedTest(5000)
     // TODO: add display name
-    public void testingRemoveLibrarySet() {
+    public void RemoveLibrarySetParallel() {
         set = new ConcurrentIntegerSetLibrary();
         set.add(2);
         int nrThreads = 20;
@@ -212,5 +212,41 @@ public class ConcurrentSetTest {
         }
         
 		assertTrue(set.size() == 0, "set.size() == "+set.size()+", but we expected "+0);
+    }
+
+    @RepeatedTest(5000)  
+    @DisplayName("Tests if the set would add the same number twice - this should not happen, but it is a possible interleaving") // TODO: make sure this description is correct
+    public void AddLibrarySetParallel() {
+        set = new ConcurrentIntegerSetLibrary();
+        int nrThreads = 20;
+        // init barrier
+        barrier = new CyclicBarrier(nrThreads + 1);
+
+        // start threads
+        for (int j = 0; j < nrThreads; j++) {
+            new Thread(() -> {
+                try {
+                    barrier.await(1, TimeUnit.SECONDS); // Wait with timeout
+                
+                    set.add(3); // Example: add same number from all threads
+                
+                    barrier.await(1, TimeUnit.SECONDS); // Signal completion with timeout
+                } catch (InterruptedException | BrokenBarrierException | TimeoutException e) {
+                    // Thread got stuck or timed out - this is expected with buggy implementation
+                    System.err.println("Thread timed out or barrier broken: " + e.getMessage());
+                }
+            }).start();
+        }
+        
+        // Main thread synchronization - AFTER all threads are started
+        try {
+            barrier.await(1, TimeUnit.SECONDS); // Main thread releases all worker threads
+            barrier.await(1, TimeUnit.SECONDS); // Main thread waits for all workers to complete
+        } catch (InterruptedException | BrokenBarrierException | TimeoutException e) {
+            // Timeout indicates threads got stuck - this is a failure we want to detect
+            System.err.println("Barrier timeout in main thread: " + e.getMessage());
+        }
+        
+		assertTrue(set.size() == 1, "set.size() == "+set.size()+", but we expected "+1);
     }
 }
