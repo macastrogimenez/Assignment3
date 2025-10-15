@@ -18,6 +18,7 @@ class ConcurrentIntegerSetSync implements ConcurrentIntegerSet {
 
     public ConcurrentIntegerSetSync() {
         this.set = new HashSet<Integer>();
+        this.lock = new ReentrantLock();  // Initialize the lock!
     }
 
     public boolean add(Integer element) {
@@ -36,16 +37,21 @@ class ConcurrentIntegerSetSync implements ConcurrentIntegerSet {
     }
 
     public int size() {
-        return set.size();
+        lock.lock();
+        int currentSize = set.size();
+        lock.unlock();
+        return currentSize;
     }
 }
 
 
 class ConcurrentIntegerSetBuggy implements ConcurrentIntegerSet {
     final private Set<Integer> set;
+    private ReentrantLock lock;
 
     public ConcurrentIntegerSetBuggy() {
         this.set = new HashSet<Integer>();
+        this.lock = new ReentrantLock();
     }
 
     public boolean add(Integer element) {
@@ -56,9 +62,18 @@ class ConcurrentIntegerSetBuggy implements ConcurrentIntegerSet {
         return set.remove(element);
     }
 
-    public int size() {
-        return set.size();
+    public int size(){
+        int size;
+        try{
+            lock.lock();
+            size = set.size();
+        }
+        finally{
+            lock.unlock();
+        }
+        return size;
     }
+
 }
 
 class ConcurrentIntegerSetLibrary implements ConcurrentIntegerSet {
