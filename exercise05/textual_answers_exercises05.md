@@ -74,3 +74,21 @@ Let us remember that the methods `add()`, `remove()`, and `size()` from the clas
 
 Also, while it might seem that `size()` is just a read operation and doesn't modify the set, it **absolutely must be synchronized**. Without synchronization, the `size()` method may read **stale data** from CPU cache instead of the actual current state. Example: Thread T1 reads the `size` field before T2 finishes incrementing it, seeing an inconsistent snapshot where the table has been modified but the size hasn't been updated yet.
 
+### Exercise 5.1.4
+
+The test were performed with a Macbook Pro M1 Pro 32Gb RAM, 1Tb SSD (10 CPU). Every test was ran 5000 times, with the main thread plus 20 other threads trying to either add or remove an element from the set.
+No failures were found which is a good sign that the `ConcurrentIntegerSetLibrary` is thread-safe, however, these do not guarantee the that this is the case.
+
+### Exercise 5.1.5
+
+When a test **fails**, it provides definitive evidence that the implementation is **not thread-safe**:
+
+- A failed assertion (`set.size() == 2` when we expected 1) demonstrates that a race condition occurred
+- The failure shows a concrete execution trace where threads interleaved incorrectly
+- This is a **proof by counterexample** - we found at least one scenario where thread safety was violated
+
+### Exercise 5.1.6
+
+Test passes do not prove correctness. Even with 5000 repetitions and 20 threads, we only explore a tiny fraction of all possible thread interleavings. The number of possible execution orders grows with thread count.
+Moreover, a bug might only manifest under specific timing conditions (CPU load, scheduler decisions, hardware) that didn't occur during testing. Therefore, testing can find bugs but cannot prove their absence in concurrent programs.
+
