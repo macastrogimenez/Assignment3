@@ -12,8 +12,6 @@ public interface ConcurrentIntegerSet {
     public boolean remove(Integer element);
     public int size();
 }
-
-// TODO: Fix this class to pass your tests
 class ConcurrentIntegerSetSync implements ConcurrentIntegerSet {
     final private Set<Integer> set;
     private ReentrantLock lock;

@@ -1,10 +1,13 @@
 package exercises05;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
+import static org.junit.jupiter.api.Assertions.*;
+
 // TODO: Very likely you need to expand the list of imports
 
 public class ConcurrentSetTest {
-
     // Variable with set under test
     private ConcurrentIntegerSet set;
 
