@@ -36,6 +36,7 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+
 application {
     // Define the main class for the application.
     // Requires at least Gradle 7.1.1

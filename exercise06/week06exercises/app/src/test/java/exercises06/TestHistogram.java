@@ -28,7 +28,7 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 
-public class TestHistograms {
+public class TestHistogram {
     // The imports above are just for convenience, feel free add or remove imports
 
     // TODO: 5.1.3
