@@ -5,7 +5,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ReadWriteCASLockTest {
+class TestReadWriteCASLock {
     private ReadWriteCASLock lock;
 
     @BeforeEach

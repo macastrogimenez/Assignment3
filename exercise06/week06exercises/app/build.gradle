@@ -16,8 +16,9 @@ repositories {
 }
 
 dependencies {
-    // Use JUnit test framework.
+    // Use JUnit 5 test framework.
     testImplementation libs.junit
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // This dependency is used by the application.
     implementation libs.guava
@@ -30,6 +31,10 @@ java {
     }
 }
 
+tasks.named('test') {
+    // Use JUnit Platform for unit tests.
+    useJUnitPlatform()
+}
 
 application {
     // Define the main class for the application.
